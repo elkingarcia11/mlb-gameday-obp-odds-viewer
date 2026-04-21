@@ -1,0 +1,2 @@
+# ads.txt for mlb-gameday-obp-odds-viewer.elkingarcia.com
+# This site does not authorize any third-party ad sellers.
