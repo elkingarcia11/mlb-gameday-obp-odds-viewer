@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLB Gameday OBP Odds Viewer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div>
+          <h1>MLB Gameday OBP Odds Viewer</h1>
+          <p class="subhead">
+            Loads today’s matchup CSV from GCS and highlights rows by your
+            NHO/NPO rules.
+          </p>
+        </div>
+      </header>
+
+      <section class="controls">
+        <label class="control">
+          <span>Override date</span>
+          <input id="dateInput" type="date" />
+        </label>
+        <button id="reloadBtn" class="button button-primary" type="button">
+          Reload
+        </button>
+        <button id="downloadBtn" class="button" type="button">Download</button>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="tabs-row" aria-label="Views">
+        <div class="tabs" role="tablist" aria-label="Views tabs">
+          <button
+            id="tabTable"
+            class="tab tab-active"
+            role="tab"
+            aria-selected="true"
+            type="button"
+          >
+            Table
+          </button>
+          <button
+            id="tabCharts"
+            class="tab"
+            role="tab"
+            aria-selected="false"
+            type="button"
+          >
+            Charts
+          </button>
+        </div>
+
+        <aside id="legendRight" class="legend legend-right panel-hidden" aria-label="Legend">
+          <div class="legend-title">Legend</div>
+          <div class="legend-item legend-green">
+            <span class="swatch"></span>
+            <span>NHO &gt; 0 and NPO &lt; 0 and NOT FAVORITE = GREAT</span>
+          </div>
+          <div class="legend-item legend-yellow">
+            <span class="swatch"></span>
+            <span>NHO &gt; 0 and NPO &lt; 0 and FAVORITE = good</span>
+          </div>
+        </aside>
+      </section>
+
+      <main class="card">
+        <section
+          id="panelTable"
+          class="panel"
+          role="tabpanel"
+          aria-label="Table"
+        >
+          <div class="table-wrap">
+            <table id="matchupsTable" class="table">
+              <thead id="tableHead"></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="panelCharts"
+          class="panel panel-hidden"
+          role="tabpanel"
+          aria-label="Charts"
+        >
+          <div class="charts-layout">
+            <div class="charts">
+              <a
+                class="chart-card"
+                href="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_hitting_x_pitching_sign.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div class="chart-title">Historic: hitting × pitching sign</div>
+                <img
+                  loading="lazy"
+                  alt="Historic hitting x pitching sign"
+                  src="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_hitting_x_pitching_sign.png"
+                />
+              </a>
+
+              <a
+                class="chart-card"
+                href="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_matchup_odds_results.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div class="chart-title">Historic: matchup odds results</div>
+                <img
+                  loading="lazy"
+                  alt="Historic matchup odds results"
+                  src="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_matchup_odds_results.png"
+                />
+              </a>
+
+              <a
+                class="chart-card"
+                href="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_matchup_spread_winrate.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div class="chart-title">Historic: matchup spread winrate</div>
+                <img
+                  loading="lazy"
+                  alt="Historic matchup spread winrate"
+                  src="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_matchup_spread_winrate.png"
+                />
+              </a>
+
+              <a
+                class="chart-card"
+                href="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_odds_vs_pitching_sign.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div class="chart-title">Historic: odds vs pitching sign</div>
+                <img
+                  loading="lazy"
+                  alt="Historic odds vs pitching sign"
+                  src="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_odds_vs_pitching_sign.png"
+                />
+              </a>
+
+              <a
+                class="chart-card"
+                href="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_pitching_spread_winrate.png"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div class="chart-title">Historic: pitching spread winrate</div>
+                <img
+                  loading="lazy"
+                  alt="Historic pitching spread winrate"
+                  src="https://storage.googleapis.com/elkin-garcia-workspace-mlb-gameday-obp-odds-prod/data/results/historic_pitching_spread_winrate.png"
+                />
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
