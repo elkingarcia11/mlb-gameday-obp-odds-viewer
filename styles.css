@@ -51,6 +51,20 @@ body {
   margin-bottom: 14px;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
 h1 {
   font-size: 22px;
   margin: 0 0 6px;
