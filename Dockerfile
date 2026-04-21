@@ -9,7 +9,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 # Copy app source
-COPY server.js index.html styles.css app.js ./
+COPY server.js index.html styles.css app.js ads.txt ./
+COPY assets ./assets
 
 # Cloud Run provides PORT; default is fine for local
 ENV PORT=8080
