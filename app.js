@@ -94,6 +94,11 @@ const legendRightEl = el("legendRight");
 const panelTableEl = el("panelTable");
 const panelChartsEl = el("panelCharts");
 
+/** @type {{headers: string[], rows: Record<string, string>[]} | null} */
+let tableData = null;
+/** @type {{col: string, dir: "asc" | "desc"} | null} */
+let sortState = null;
+
 function setActiveTab(which) {
   const isTable = which === "table";
 
@@ -114,6 +119,58 @@ function setStatus(text, kind = "info") {
   statusEl.innerHTML = `${prefix}${text}`;
 }
 
+/** @param {string} h */
+function isNumericHeader(h) {
+  return (
+    h.endsWith("_obp") ||
+    h === "net_hitting_obp" ||
+    h === "net_pitching_obp" ||
+    h === "game_pk"
+  );
+}
+
+/**
+ * @param {Record<string, string>[]} rows
+ * @param {string} col
+ * @param {"asc"|"desc"} dir
+ */
+function sortRows(rows, col, dir) {
+  const factor = dir === "asc" ? 1 : -1;
+  const numeric = isNumericHeader(col);
+
+  return [...rows].sort((a, b) => {
+    const av = a[col] ?? "";
+    const bv = b[col] ?? "";
+
+    if (numeric) {
+      const an = toNumberOrNaN(String(av));
+      const bn = toNumberOrNaN(String(bv));
+      const aOk = Number.isFinite(an);
+      const bOk = Number.isFinite(bn);
+      if (aOk && bOk) return (an - bn) * factor;
+      if (aOk && !bOk) return -1;
+      if (!aOk && bOk) return 1;
+      return String(av).localeCompare(String(bv)) * factor;
+    }
+
+    return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: "base" }) * factor;
+  });
+}
+
+/** @param {string} col */
+function setSort(col) {
+  if (!tableData) return;
+
+  if (sortState?.col === col) {
+    sortState = { col, dir: sortState.dir === "asc" ? "desc" : "asc" };
+  } else {
+    sortState = { col, dir: "asc" };
+  }
+
+  const sorted = sortRows(tableData.rows, sortState.col, sortState.dir);
+  renderTable(tableData.headers, sorted);
+}
+
 function renderTable(headers, rows) {
   tableHeadEl.innerHTML = "";
   tableBodyEl.innerHTML = "";
@@ -121,7 +178,23 @@ function renderTable(headers, rows) {
   const headRow = document.createElement("tr");
   for (const h of headers) {
     const th = document.createElement("th");
-    th.textContent = h;
+    th.className = "sortable";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "th-btn";
+    btn.textContent = h;
+    btn.addEventListener("click", () => setSort(h));
+
+    if (sortState?.col === h) {
+      th.setAttribute("aria-sort", sortState.dir === "asc" ? "ascending" : "descending");
+      btn.setAttribute("data-sort", sortState.dir);
+    } else {
+      th.removeAttribute("aria-sort");
+      btn.removeAttribute("data-sort");
+    }
+
+    th.appendChild(btn);
     headRow.appendChild(th);
   }
   tableHeadEl.appendChild(headRow);
@@ -134,16 +207,10 @@ function renderTable(headers, rows) {
       const td = document.createElement("td");
       const v = r[h] ?? "";
 
-      const isNumericCol =
-        h.endsWith("_obp") ||
-        h === "net_hitting_obp" ||
-        h === "net_pitching_obp" ||
-        h === "game_pk";
-
       if (h === "odds") {
         td.innerHTML = `<span class="pill">${String(v)}</span>`;
         td.className = "center";
-      } else if (isNumericCol) {
+      } else if (isNumericHeader(h)) {
         td.textContent = prettyNumber(String(v));
         td.className = "num mono";
       } else {
@@ -188,6 +255,8 @@ async function loadForDate(dateStr) {
     return;
   }
 
+  tableData = { headers, rows };
+  sortState = null;
   renderTable(headers, rows);
   setStatus(`Loaded <strong>${rows.length}</strong> rows from <span class="mono">${dateStr}_matchups.csv</span>.`);
 }

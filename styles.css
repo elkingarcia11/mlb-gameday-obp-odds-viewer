@@ -289,6 +289,39 @@ thead th {
   white-space: nowrap;
 }
 
+.th-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.th-btn::after {
+  content: "↕";
+  opacity: 0.35;
+  font-size: 12px;
+}
+
+.th-btn[data-sort="asc"]::after {
+  content: "↑";
+  opacity: 0.9;
+}
+
+.th-btn[data-sort="desc"]::after {
+  content: "↓";
+  opacity: 0.9;
+}
+
+.sortable:hover .th-btn {
+  color: rgba(255, 255, 255, 0.95);
+}
+
 tbody td {
   padding: 10px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
